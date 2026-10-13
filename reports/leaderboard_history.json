@@ -12,5 +12,12 @@
     "leaderboard_f1_macro": 0.59242,
     "source": "Reported by user",
     "local_cv_macro_f1": 0.5852619110019079
+  },
+  {
+    "submission": "submissions/submission_calibrated.csv",
+    "sha256": "f9ad3d69b2e3e89fc1067bf891a6738f7fd97c1bc782e5ac9df58c51737916eb",
+    "leaderboard_f1_macro": 0.59225,
+    "source": "Reported by user",
+    "local_cv_macro_f1": 0.5856797026634043
   }
 ]

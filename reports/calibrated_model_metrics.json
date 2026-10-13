@@ -61,6 +61,9 @@
   },
   "protocol": "Three deterministic joint searches for four relative decision multipliers on fold 0 only; frozen for folds 1-4. Same pretrained sklearn Pipeline ensemble. Reused folds make this internal validation, not an unbiased new benchmark.",
   "baseline_leaderboard_user_reported": 0.59242,
-  "new_leaderboard": null,
-  "confirmation_improved": true
+  "new_leaderboard": 0.59225,
+  "confirmation_improved": true,
+  "leaderboard_source": "Reported by user",
+  "leaderboard_improved": false,
+  "leaderboard_delta": -0.00017
 }

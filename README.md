@@ -340,8 +340,12 @@ Pipeline/ColumnTransformer sebelumnya, tanpa neural network atau training baru.
 
 Peningkatan konfirmasi +0.000356 sangat kecil. Fold historis telah dipakai berulang
 kali sehingga ini validasi internal, bukan bukti peningkatan yang signifikan atau
-jaminan leaderboard. Submission terbaik terkonfirmasi masih 0.59242; skor
-leaderboard kandidat `submissions/submission_calibrated.csv` belum diketahui.
+jaminan leaderboard. Pengguna melaporkan skor leaderboard **0.59225** untuk
+`submissions/submission_calibrated.csv`, turun **0.00017** dari hasil terbaik.
+Kenaikan CV tidak berlanjut pada leaderboard. Submission yang direkomendasikan
+tetap **`submissions/submission_improved.csv` (0.59242)** dengan model
+`models/improved_ensemble.pkl`. Eksperimen calibrated dipertahankan untuk
+reproduksi dan perbandingan, bukan sebagai model terbaik.
 
 Reproduksi dari clone baru:
 
