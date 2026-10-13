@@ -1,0 +1,16 @@
+[
+  {
+    "submission": "submissions\\submission_native.csv",
+    "sha256": "6ffccb9b28a4629a3f72515214fb03e6c8348ac92f1c016e2eaa1531c32b1db0",
+    "leaderboard_f1_macro": 0.59005,
+    "source": "Reported by user",
+    "local_cv_macro_f1": 0.5833248170888767
+  },
+  {
+    "submission": "submissions/submission_improved.csv",
+    "sha256": "6737a34f0e1db20ae1b4f48fa40601254a294753935cdc4011e00a7c027c7663",
+    "leaderboard_f1_macro": 0.59242,
+    "source": "Reported by user",
+    "local_cv_macro_f1": 0.5852619110019079
+  }
+]

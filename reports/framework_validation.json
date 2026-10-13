@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "checks": [
+    "All function/class docstrings",
+    "Notebook code compiles",
+    "Pipeline and ColumnTransformer",
+    "RandomizedSearchCV f1_macro",
+    "Save/reload .pkl",
+    "Missing and unseen-category inference",
+    "Sample-ID order and numeric labels",
+    "Actual git check-ignore for all data CSVs",
+    "RandomForest pipeline fit/predict",
+    "LightGBM pipeline fit/predict",
+    "Optional ID feature transformation"
+  ],
+  "smoke_rows": 1000,
+  "full_training_run": false
+}

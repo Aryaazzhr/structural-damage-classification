@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "submission_rows": 228629,
+  "integer_grades_and_id_order": "PASS",
+  "cv_macro_f1": 0.5856797026634043,
+  "confirmation_macro_f1": 0.5856039856076676,
+  "model_reload_probability_parity_rows": 128,
+  "best_leaderboard_submission_unchanged": true,
+  "submission_sha256": "f9ad3d69b2e3e89fc1067bf891a6738f7fd97c1bc782e5ac9df58c51737916eb"
+}

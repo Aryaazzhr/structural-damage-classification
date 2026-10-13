@@ -1,0 +1,11 @@
+{
+  "historical_v2_macro_f1": 0.5828382922377816,
+  "historical_protocol": "5-fold OOF, model/decision weights selected on fold 0",
+  "academic_macro_f1": 0.508214608339079,
+  "academic_protocol": "20% stratified holdout, seed 42, LightGBM default, no tuning, no ID features",
+  "numerical_difference": -0.07462368389870255,
+  "same_score": false,
+  "directly_comparable_protocols": false,
+  "original_submission_overwritten": false,
+  "full_training_rows": 533465
+}

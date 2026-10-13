@@ -1,0 +1,11 @@
+{
+  "submission": "submissions/submission_improved.csv",
+  "sha256": "6737a34f0e1db20ae1b4f48fa40601254a294753935cdc4011e00a7c027c7663",
+  "leaderboard_f1_macro": 0.59242,
+  "source": "Reported by user",
+  "local_cv_macro_f1": 0.5852619110019079,
+  "model": "models/improved_ensemble.pkl",
+  "confirmation_macro_f1": 0.5852481089416942,
+  "previous_leaderboard_f1_macro": 0.59005,
+  "leaderboard_gain": 0.00237
+}

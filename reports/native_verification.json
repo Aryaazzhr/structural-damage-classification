@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "cv_macro_f1_sklearn": 0.5833248170888767,
+  "confirmation_macro_f1_sklearn": 0.5833099535260294,
+  "submission_rows": 228629,
+  "integer_grades": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "all_probabilities_valid": true,
+  "all_five_models_pipeline_columntransformer": true,
+  "serialization_parity_rows": 256,
+  "max_probability_difference": 0.0,
+  "docstrings_and_notebook_syntax": "PASS",
+  "leaderboard": "Not evaluated; requires Kaggle upload"
+}

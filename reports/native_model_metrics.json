@@ -1,0 +1,61 @@
+{
+  "model": "native LightGBM, ensemble of five sklearn Pipelines",
+  "metric": "F1-macro",
+  "cv_macro_f1": 0.5833248170888767,
+  "confirmation_macro_f1": 0.5833099535260294,
+  "decision_weights": [
+    0.6583333333333334,
+    0.95,
+    1.1416666666666668,
+    1.1708333333333336,
+    1.0
+  ],
+  "rows": 533465,
+  "classification_report": {
+    "1": {
+      "precision": 0.6969730878979467,
+      "recall": 0.677379010331702,
+      "f1-score": 0.6870363731627278,
+      "support": 55170.0
+    },
+    "2": {
+      "precision": 0.44061978395742135,
+      "recall": 0.458120497707924,
+      "f1-score": 0.44919974957057773,
+      "support": 61080.0
+    },
+    "3": {
+      "precision": 0.45331525216544266,
+      "recall": 0.49710958445040215,
+      "f1-score": 0.4742034255573149,
+      "support": 95488.0
+    },
+    "4": {
+      "precision": 0.5385819422006821,
+      "recall": 0.5828768134523782,
+      "f1-score": 0.5598546084204713,
+      "support": 128691.0
+    },
+    "5": {
+      "precision": 0.7911135350909766,
+      "recall": 0.7063449304792888,
+      "f1-score": 0.7463299287332917,
+      "support": 193036.0
+    },
+    "accuracy": 0.6076912262285248,
+    "macro avg": {
+      "precision": 0.5841207202624938,
+      "recall": 0.584366167284339,
+      "f1-score": 0.5833248170888767,
+      "support": 533465.0
+    },
+    "weighted avg": {
+      "precision": 0.61986310169513,
+      "recall": 0.6076912262285248,
+      "f1-score": 0.6124833825011463,
+      "support": 533465.0
+    }
+  },
+  "protocol": "StratifiedKFold(5, shuffle=True, random_state=42); decision weights selected on fold 0; fold-local categories; fixed 500 trees. Historical hyperparameters were previously selected on this dataset; this is not a new unbiased benchmark.",
+  "historical_cv_macro_f1": 0.5828382922377816
+}

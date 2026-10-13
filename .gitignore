@@ -1,0 +1,27 @@
+# Competition datasets must never be committed.
+/data/*.csv
+/data/**/*.csv
+/data/*.zip
+# Large, reproducible binary artifacts
+/models/*.pkl
+/models/*.joblib
+/models/*.metrics.json
+/reports/*.npz
+/submissions/*.csv
+# Local Python/Jupyter/environment files and credentials
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+.env.*
+kaggle.json
+.kaggle/
+.DS_Store
+Thumbs.db
+
+# Local training checkpoints/logs and supplemental competition data
+/models/*.json
+/reports/*.log
+/reports/metadata.csv

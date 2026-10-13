@@ -1,0 +1,66 @@
+{
+  "cv_macro_f1": 0.5856797026634043,
+  "confirmation_macro_f1": 0.5856039856076676,
+  "baseline_cv_macro_f1": 0.5852619110019079,
+  "baseline_confirmation_macro_f1": 0.5852481089416942,
+  "selection": {
+    "seed": 137,
+    "selection_macro_f1": 0.5859862892105543,
+    "weights": [
+      0.801681442804281,
+      1.1040667567677698,
+      1.2511333206681592,
+      1.1393792937246374,
+      1.0
+    ]
+  },
+  "classification_report": {
+    "1": {
+      "precision": 0.6889800214121106,
+      "recall": 0.6882182345477614,
+      "f1-score": 0.6885989172915967,
+      "support": 55170.0
+    },
+    "2": {
+      "precision": 0.4354608637591429,
+      "recall": 0.46981008513425015,
+      "f1-score": 0.45198380821874656,
+      "support": 61080.0
+    },
+    "3": {
+      "precision": 0.4500767628029389,
+      "recall": 0.5157820878016086,
+      "f1-score": 0.4806945284897226,
+      "support": 95488.0
+    },
+    "4": {
+      "precision": 0.5533979837068773,
+      "recall": 0.560054704680203,
+      "f1-score": 0.5567064457575407,
+      "support": 128691.0
+    },
+    "5": {
+      "precision": 0.7943758644836826,
+      "recall": 0.7110642574442073,
+      "f1-score": 0.7504148135594148,
+      "support": 193036.0
+    },
+    "accuracy": 0.6096951065205777,
+    "macro avg": {
+      "precision": 0.5844582992329505,
+      "recall": 0.5889858739216061,
+      "f1-score": 0.5856797026634043,
+      "support": 533465.0
+    },
+    "weighted avg": {
+      "precision": 0.6226207653059442,
+      "recall": 0.6096951065205777,
+      "f1-score": 0.6148443020078991,
+      "support": 533465.0
+    }
+  },
+  "protocol": "Three deterministic joint searches for four relative decision multipliers on fold 0 only; frozen for folds 1-4. Same pretrained sklearn Pipeline ensemble. Reused folds make this internal validation, not an unbiased new benchmark.",
+  "baseline_leaderboard_user_reported": 0.59242,
+  "new_leaderboard": null,
+  "confirmation_improved": true
+}

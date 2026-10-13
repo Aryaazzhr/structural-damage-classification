@@ -1,0 +1,75 @@
+{
+  "selection": {
+    "name": "wide",
+    "alpha": 0.5,
+    "weights": [
+      0.6750000000000002,
+      0.9333333333333333,
+      1.0625,
+      0.9708333333333334,
+      1.0
+    ],
+    "selection_macro_f1": 0.5853194380226686
+  },
+  "config": {
+    "name": "wide",
+    "model__n_estimators": 700,
+    "model__num_leaves": 255,
+    "model__min_child_samples": 100,
+    "model__reg_lambda": 5
+  },
+  "cv_macro_f1": 0.5852619110019079,
+  "confirmation_macro_f1": 0.5852481089416942,
+  "baseline_confirmation_macro_f1": 0.5833099535260294,
+  "baseline_cv_macro_f1": 0.5833248170888767,
+  "classification_report": {
+    "1": {
+      "precision": 0.6907263507351064,
+      "recall": 0.6863694036614102,
+      "f1-score": 0.6885409847988945,
+      "support": 55170.0
+    },
+    "2": {
+      "precision": 0.4377399048057731,
+      "recall": 0.46676489849377867,
+      "f1-score": 0.45178670469851834,
+      "support": 61080.0
+    },
+    "3": {
+      "precision": 0.4542313202917958,
+      "recall": 0.5079800603217158,
+      "f1-score": 0.4796044988258559,
+      "support": 95488.0
+    },
+    "4": {
+      "precision": 0.5632959289126136,
+      "recall": 0.5379086338593997,
+      "f1-score": 0.5503096405943192,
+      "support": 128691.0
+    },
+    "5": {
+      "precision": 0.774988440721299,
+      "recall": 0.7380488613522866,
+      "f1-score": 0.7560677260919519,
+      "support": 193036.0
+    },
+    "accuracy": 0.6121807428791017,
+    "macro avg": {
+      "precision": 0.5841963890933176,
+      "recall": 0.5874143715377181,
+      "f1-score": 0.5852619110019079,
+      "support": 533465.0
+    },
+    "weighted avg": {
+      "precision": 0.6191782994168039,
+      "recall": 0.6121807428791017,
+      "f1-score": 0.6151230164487518,
+      "support": 533465.0
+    }
+  },
+  "protocol": "Capacity, blend and decision weights selected on fold 0 only. Frozen for folds 1-4. These folds have historical reuse; this is not a fresh unbiased benchmark.",
+  "baseline_leaderboard_user_reported": 0.59005,
+  "new_leaderboard": 0.59242,
+  "confirmation_improved": true,
+  "leaderboard_source": "Reported by user"
+}

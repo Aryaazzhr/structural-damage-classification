@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "rows": 228629,
+  "cv_macro_f1": 0.5852619110019079,
+  "confirmation_macro_f1": 0.5852481089416942,
+  "all_probabilities_valid": true,
+  "all_ten_models_pipeline_columntransformer": true,
+  "model_reload_parity_rows": 256,
+  "max_probability_difference": 2.220446049250313e-16,
+  "baseline_submission_unchanged": true,
+  "integer_labels_and_sample_order": "PASS",
+  "script_docstrings": "PASS",
+  "new_submission_sha256": "6737a34f0e1db20ae1b4f48fa40601254a294753935cdc4011e00a7c027c7663"
+}

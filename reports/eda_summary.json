@@ -1,0 +1,38 @@
+{
+  "train_shape": [
+    533465,
+    17
+  ],
+  "test_shape": [
+    228629,
+    16
+  ],
+  "missing_train": {
+    "building_id": 0,
+    "district_id": 0,
+    "vdcmun_id": 0,
+    "ward_id": 0,
+    "count_floors_pre_eq": 0,
+    "age_building": 0,
+    "plinth_area_sq_ft": 0,
+    "height_ft_pre_eq": 0,
+    "land_surface_condition": 0,
+    "foundation_type": 0,
+    "roof_type": 0,
+    "ground_floor_type": 0,
+    "other_floor_type": 0,
+    "position": 0,
+    "plan_configuration": 0,
+    "damage_grade": 0,
+    "superstructure": 0
+  },
+  "target_counts": {
+    "Grade 1": 55170,
+    "Grade 2": 61080,
+    "Grade 3": 95488,
+    "Grade 4": 128691,
+    "Grade 5": 193036
+  },
+  "age_sentinel_count": 2198,
+  "overlapping_building_ids": 0
+}

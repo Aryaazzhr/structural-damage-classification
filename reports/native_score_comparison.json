@@ -1,0 +1,10 @@
+{
+  "protocol": "Same five stratified fold indices as V2; fixed 500 trees and fold-local categories differ. Historical parameter selection means this is not a fresh unbiased benchmark.",
+  "historical_v2_cv_macro_f1": 0.5828382922377816,
+  "native_cv_macro_f1": 0.5833248170888767,
+  "cv_delta": 0.000486524851095127,
+  "historical_confirmation_macro_f1": 0.5827996579961526,
+  "native_confirmation_macro_f1": 0.5833099535260294,
+  "new_submission": "submissions/submission_native.csv",
+  "new_leaderboard_score": null
+}
