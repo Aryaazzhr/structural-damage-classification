@@ -1,11 +1,11 @@
 {
-  "submission": "submissions/submission_regional.csv",
-  "sha256": "6ae49cdaf23bc5e1c79559b6cf2128737bdb85885aeb320ae28072235bb982b5",
-  "leaderboard_f1_macro": 0.59326,
+  "submission": "submissions/submission_diverse.csv",
+  "sha256": "5710815625827bcb4a0398f68bac58f2520140e019b5aa2c32600e9f66d746a7",
+  "leaderboard_f1_macro": 0.59578,
   "source": "Reported by user",
-  "local_cv_macro_f1": 0.5863962218234497,
-  "model": "models/regional_ensemble.pkl",
-  "confirmation_macro_f1": 0.5864995272727616,
-  "previous_leaderboard_f1_macro": 0.59242,
-  "leaderboard_gain": 0.00084
+  "local_cv_macro_f1": 0.5886698796329529,
+  "model": "models/diverse_ensemble.pkl",
+  "confirmation_macro_f1": 0.5887761333093797,
+  "previous_leaderboard_f1_macro": 0.59326,
+  "leaderboard_gain": 0.00252
 }

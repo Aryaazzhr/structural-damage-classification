@@ -6,10 +6,10 @@ dirata-ratakan tanpa pembobotan jumlah sampel. **Tidak menggunakan neural networ
 
 ## Hasil terbaik saat ini
 
-- F1-macro leaderboard: **0.59326**, dilaporkan pengguna (sebelumnya 0.59242; naik 0.00084).
-- F1-macro CV: **0.586396**; fold konfirmasi: **0.586500**.
-- Submission: `submissions/submission_regional.csv`.
-- Model: `models/regional_ensemble.pkl`, beserta lima fold regional_medium, lima native, dan lima improved_wide.
+- F1-macro leaderboard: **0.59578**, dilaporkan pengguna (sebelumnya 0.59326; naik 0.00252).
+- F1-macro CV: **0.588670**; fold konfirmasi: **0.588776**.
+- Submission: `submissions/submission_diverse.csv`.
+- Model: `models/diverse_ensemble.pkl`, beserta lima fold dari setiap keluarga diverse_sampled, regional_medium, native, dan improved_wide.
 - Catatan identitas file dan riwayat: `reports/leaderboard_best.json` serta `reports/leaderboard_history.json`.
 
 ## Struktur repositori
@@ -412,9 +412,9 @@ dan lima improved_wide.
 Kelima fold meningkat. Kenaikan konfirmasi **+0.001251** merupakan hasil validasi
 internal pada fold yang sudah pernah digunakan. Pengguna kemudian melaporkan
 **leaderboard 0.59326**, naik **0.00084** dari 0.59242. Ensemble regional menjadi
-model dengan hasil leaderboard terbaik yang telah dilaporkan.
+model terbaik pada tahap eksperimen regional; hasil terkini ada di bagian Hasil terbaik saat ini.
 
-Submission terbaik: **`submissions/submission_regional.csv` (0.59326)**. Seluruh 228.629 baris
+Hasil historis regional: **`submissions/submission_regional.csv` (0.59326)**. Seluruh 228.629 baris
 sudah diperiksa untuk label integer 1–5, ID unik, urutan sample, dan nilai kosong.
 Lihat `reports/regional_verification.json` dan `reports/regional_class_comparison.csv`.
 Buat ulang prediksi dengan:
@@ -460,10 +460,11 @@ regional sebelumnya**. Proporsi akhir: sampled 50%, regional_medium 25%, native
 | Gabungan fold konfirmasi 1–4 | 0.586500 | **0.588776** |
 
 Kenaikan OOF +0.002274 dan konfirmasi +0.002277. Kelima fold meningkat. Ini hasil
-validasi internal; skor leaderboard kandidat baru belum diketahui. Hasil
-leaderboard terbaik terkonfirmasi tetap 0.59326 dari submission regional.
+validasi internal. Pengguna kemudian melaporkan **leaderboard 0.59578**, naik
+**0.00252** dari 0.59326. Ensemble sampled menjadi hasil leaderboard terbaik
+yang telah dilaporkan.
 
-Kandidat upload berikutnya: **`submissions/submission_diverse.csv`**.
+Submission terbaik: **`submissions/submission_diverse.csv` (0.59578)**.
 Seluruh 228.629 baris diperiksa untuk ID unik, urutan sample, tidak ada missing,
 dan label integer 1–5. Pemeriksaan model tersimpan, probabilitas, dan kode ada di
 `reports/diverse_verification.json`; perbandingan kelas di

@@ -74,6 +74,9 @@
   },
   "protocol": "One predeclared native LightGBM configuration with seed 137 and row/feature sampling. Blend selected on fold 0 only, fixed incumbent class weights, frozen for folds 1-4. Historical reuse means internal validation, not a fresh unbiased benchmark.",
   "baseline_leaderboard_user_reported": 0.59326,
-  "new_leaderboard": null,
-  "confirmation_improved": true
+  "new_leaderboard": 0.59578,
+  "confirmation_improved": true,
+  "leaderboard_source": "Reported by user",
+  "leaderboard_improved": true,
+  "leaderboard_delta": 0.00252
 }
