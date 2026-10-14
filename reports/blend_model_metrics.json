@@ -1,0 +1,60 @@
+{
+  "mix": {
+    "native": 0.375,
+    "wide": 0.125,
+    "regional": 0.5
+  },
+  "cv_macro_f1": 0.586304460128859,
+  "confirmation_macro_f1": 0.5863202293872842,
+  "baseline_cv_macro_f1": 0.5863962218234497,
+  "baseline_confirmation_macro_f1": 0.5864995272727616,
+  "classification_report": {
+    "1": {
+      "precision": 0.6940520309690676,
+      "recall": 0.6856987493202827,
+      "f1-score": 0.6898501039425217,
+      "support": 55170.0
+    },
+    "2": {
+      "precision": 0.44101084592005185,
+      "recall": 0.46799279633267843,
+      "f1-score": 0.45410136857907657,
+      "support": 61080.0
+    },
+    "3": {
+      "precision": 0.45388769904087906,
+      "recall": 0.5104620475871313,
+      "f1-score": 0.48051538362957047,
+      "support": 95488.0
+    },
+    "4": {
+      "precision": 0.5636307431992711,
+      "recall": 0.5383904080316417,
+      "f1-score": 0.5507215273886312,
+      "support": 128691.0
+    },
+    "5": {
+      "precision": 0.7752850552702585,
+      "recall": 0.7382871588719203,
+      "f1-score": 0.756333917104495,
+      "support": 193036.0
+    },
+    "accuracy": 0.6128986906357493,
+    "macro avg": {
+      "precision": 0.5855732748799056,
+      "recall": 0.5881662320287309,
+      "f1-score": 0.586304460128859,
+      "support": 533465.0
+    },
+    "weighted avg": {
+      "precision": 0.6200233408481957,
+      "recall": 0.6128986906357493,
+      "f1-score": 0.6158821532484662,
+      "support": 533465.0
+    }
+  },
+  "baseline_leaderboard": 0.59326,
+  "new_leaderboard": null,
+  "protocol": "Predeclared coarse mixture grid on fold 0 only; class multipliers frozen to incumbent. Evaluate frozen mixture on folds 1-4. Repeated historical use means internal validation, not unbiased new evaluation.",
+  "confirmation_improved": false
+}

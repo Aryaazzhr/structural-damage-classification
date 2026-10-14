@@ -29,6 +29,8 @@ notebooks/
     04_improve.ipynb
     05_calibrate.ipynb
     06_regional.ipynb
+    07_blend.ipynb
+    08_diverse.ipynb
 scripts/
     __init__.py
     preprocess.py
@@ -424,3 +426,58 @@ python -m scripts.predict --model models/regional_ensemble.pkl --output submissi
 Pertahankan kelima `regional_medium_fold_*.pkl`, kelima `native_fold_*.pkl`, dan
 kelima `improved_wide_fold_*.pkl` bersama `regional_ensemble.pkl`. File submission
 improved berskor 0.59242 dan identitas SHA-256-nya tetap dipertahankan.
+
+
+## Eksperimen lanjutan setelah leaderboard 0.59326
+
+Notebook 07 menguji grid kecil campuran tiga keluarga model dengan bobot kelas
+beku. Campuran terpilih pada fold 0 (native 37.5%, wide 12.5%, regional 50%)
+menurunkan F1-macro konfirmasi dari 0.586500 menjadi 0.586320. Kandidat ini ditolak
+untuk rekomendasi upload dan tidak menghasilkan submission baru. Lihat
+`reports/blend_model_metrics.json`; hasil negatif tetap dicatat agar eksperimen
+bisa ditelusuri.
+
+Notebook 08 menguji satu konfigurasi tambahan LightGBM native: seed 137,
+900 pohon, learning_rate 0.03, 127 leaves, subsample 0.85 setiap iterasi,
+colsample_bytree 0.75, min_child_samples 60 dan reg_lambda 5. Pipeline dan
+ColumnTransformer tetap digunakan. Kontribusi 25% atau 50% model baru dipilih
+pada fold 0, lalu dibekukan untuk konfirmasi fold 1–4. Bobot keputusan kelas
+sama dengan model leaderboard 0.59326, tanpa kalibrasi ulang. Model baru hanya
+direkomendasikan jika skor konfirmasi meningkat; hasil leaderboard tetap perlu
+upload. Semua fold ini pernah dipakai dalam eksperimen historis sehingga
+hasilnya tetap validasi internal.
+
+
+### Hasil ensemble dengan sampling
+
+Campuran yang dipilih pada fold 0 adalah **50% model sampled + 50% ensemble
+regional sebelumnya**. Proporsi akhir: sampled 50%, regional_medium 25%, native
+12.5%, improved_wide 12.5%. Total 20 pipeline; bobot keputusan kelas tidak berubah.
+
+| Evaluasi | Ensemble leaderboard 0.59326 | Ensemble sampled |
+| --- | ---: | ---: |
+| OOF F1-macro | 0.586396 | **0.588670** |
+| Gabungan fold konfirmasi 1–4 | 0.586500 | **0.588776** |
+
+Kenaikan OOF +0.002274 dan konfirmasi +0.002277. Kelima fold meningkat. Ini hasil
+validasi internal; skor leaderboard kandidat baru belum diketahui. Hasil
+leaderboard terbaik terkonfirmasi tetap 0.59326 dari submission regional.
+
+Kandidat upload berikutnya: **`submissions/submission_diverse.csv`**.
+Seluruh 228.629 baris diperiksa untuk ID unik, urutan sample, tidak ada missing,
+dan label integer 1–5. Pemeriksaan model tersimpan, probabilitas, dan kode ada di
+`reports/diverse_verification.json`; perbandingan kelas di
+`reports/diverse_class_comparison.csv`.
+
+Reproduksi: jalankan workflow native, notebook 04, notebook 06, kemudian seluruh
+cell notebook 08. Notebook 05 dan 07 tidak diperlukan untuk ensemble ini. Model
+beserta prediksi NPZ adalah artefak lokal yang dihasilkan dari training, bukan
+file yang harus diunduh dari GitHub. Setelah training selesai:
+
+```powershell
+python -m scripts.predict --model models/diverse_ensemble.pkl --output submissions/submission_diverse.csv
+```
+
+Simpan `diverse_ensemble.pkl` bersama kelima file model dari masing-masing prefix:
+`diverse_sampled_fold_`, `regional_medium_fold_`, `native_fold_`, dan
+`improved_wide_fold_`. Submission regional berskor 0.59326 tetap dipertahankan.
