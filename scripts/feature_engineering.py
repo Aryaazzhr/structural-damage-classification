@@ -63,3 +63,37 @@ class NativeBuildingFeatures(BuildingFeatures):
             frame['id_suffix_4'] = X.building_id % 10000
             columns = columns + ['id_prefix_6','id_prefix_8','id_suffix_6','id_suffix_4']
         return frame[columns]
+
+
+class RegionalBuildingFeatures(NativeBuildingFeatures):
+    """Add fold-local regional summaries and stateless material/ID interactions."""
+
+    def fit(self, X, y=None):
+        """Learn ward medians/counts from training features only; never use targets."""
+        super().fit(X, y)
+        clean = X.copy()
+        clean.loc[clean.age_building >= 995, 'age_building'] = np.nan
+        self.regional_columns_ = ['age_building', 'plinth_area_sq_ft', 'height_ft_pre_eq']
+        self.global_medians_ = clean[self.regional_columns_].median()
+        self.ward_medians_ = clean.groupby('ward_id')[self.regional_columns_].median()
+        self.ward_counts_ = clean.ward_id.value_counts()
+        return self
+
+    def transform(self, X):
+        """Add regional ratios, ID prefixes and material combinations without target leakage."""
+        frame = super().transform(X)
+        check_is_fitted(self, 'ward_medians_')
+        for column in self.regional_columns_:
+            median = X.ward_id.map(self.ward_medians_[column]).fillna(self.global_medians_[column])
+            frame[f'ward_median_{column}'] = median
+            frame[f'ward_relative_{column}'] = frame[column] / median.clip(lower=1)
+        frame['ward_training_count'] = X.ward_id.map(self.ward_counts_).fillna(0)
+        if self.use_id_features:
+            identifier = X.building_id.astype(str)
+            frame['id_prefix_9'] = identifier.str[:9]
+            frame['id_prefix_10'] = identifier.str[:10]
+        for first, second in [('district_id', 'superstructure'),
+                              ('foundation_type', 'superstructure'),
+                              ('roof_type', 'ground_floor_type')]:
+            frame[f'{first}__{second}'] = X[first].astype(str) + '|' + X[second].astype(str)
+        return frame

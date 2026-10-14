@@ -28,6 +28,7 @@ notebooks/
     03_submission.ipynb
     04_improve.ipynb
     05_calibrate.ipynb
+    06_regional.ipynb
 scripts/
     __init__.py
     preprocess.py
@@ -251,15 +252,14 @@ probabilitas 0). Kelima model terverifikasi menggunakan Pipeline/ColumnTransform
 Seluruh 228.629 baris telah diperiksa: urutan ID sama dengan sample submission,
 ID unik, tidak ada missing, serta damage_grade berupa integer 1–5. Label tidak
 mengandung teks "Grade". `submissions/submission.csv` historis tetap dipertahankan.
-Skor leaderboard file baru belum diketahui; 0.57842 merupakan skor lama yang
-dilaporkan pengguna, bukan hasil upload run ini.
+Skor leaderboard submission native kemudian dilaporkan pengguna sebesar **0.59005**. Skor 0.57842 adalah hasil V1 yang lebih awal.
 
 
 ## Eksperimen peningkatan setelah leaderboard 0.59005
 
 Pengguna melaporkan F1-macro leaderboard **0.59005** untuk
 `submissions/submission_native.csv`. Identitas file (SHA-256) disimpan di
-`reports/leaderboard_best.json`; file dan kelima model native dipertahankan.
+`reports/leaderboard_history.json`; file dan kelima model native dipertahankan.
 
 Notebook `notebooks/04_improve.ipynb` menguji LightGBM native dengan kapasitas
 63/127/255 leaves, 700–1000 pohon, dan regularisasi lambda 5. Setiap kandidat
@@ -368,3 +368,58 @@ improved_wide_fold. Verifikasi seluruh baris submission dan uji pemuatan ulang
 model tersedia di `reports/calibrated_verification.json`. Dataset CSV, metadata
 kompetisi, model, checkpoint probabilitas NPZ, dan submission tidak disertakan
 dalam Git; pengguna perlu menjalankan workflow untuk mereproduksinya.
+
+
+## Eksperimen fitur regional
+
+`notebooks/06_regional.ipynb` menambahkan fitur dengan `RegionalBuildingFeatures`:
+median umur/luas/tinggi per ward, rasio terhadap median, jumlah baris training per
+ward, prefix ID 9/10 digit, serta kombinasi district-material, foundation-material,
+dan roof-ground-floor. Statistik dipelajari dari training fold saja tanpa label;
+ward baru memakai median global training. Prefix ID adalah hipotesis pola data,
+bukan koordinat yang telah diverifikasi.
+
+Dua kapasitas LightGBM (127/255 leaves, 700 pohon) dan blend 50%/100% dipilih pada
+fold 0. Bobot keputusan kelas tetap berasal dari ensemble leaderboard 0.59242.
+Pilihan dibekukan untuk fold konfirmasi 1–4. Jika model regional terpilih,
+`WeightedFoldPipelineEnsemble` menjaga bobot campuran yang tepat meskipun jumlah
+model komponennya berbeda. Hasil seleksi dan konfirmasi tersimpan terpisah di
+`reports/regional_selection.json` dan `reports/regional_model_metrics.json`.
+
+Jalankan notebook 06 setelah workflow 04 menghasilkan probabilitas/model improved.
+Penambahan kelas fitur/ensemble ini tidak mengubah perilaku kelas lama, sehingga
+model lama tetap dapat dipakai untuk prediksi. Manifest lama secara sengaja menolak
+resume training ketika hash modul berubah. Untuk mereproduksi checkpoint eksperimen
+lama persis, gunakan commit `9fb4dda` di checkout terpisah; jangan menghapus model
+terbaik untuk mengatasi ketidakcocokan manifest. Clone baru tanpa checkpoint dapat
+menjalankan urutan training dari awal.
+
+
+### Hasil eksperimen regional lengkap
+
+Kandidat terpilih memakai **127 leaves, 700 pohon**, dan blend probabilitas
+**50% model regional + 50% ensemble terbaik sebelumnya**. Bobot keputusan kelas
+tidak dioptimalkan ulang. Ensemble berisi 15 pipeline: lima regional, lima native,
+dan lima improved_wide.
+
+| Evaluasi | Ensemble leaderboard 0.59242 | Ensemble regional |
+| --- | ---: | ---: |
+| OOF F1-macro | 0.585262 | **0.586396** |
+| Gabungan fold konfirmasi 1–4 | 0.585248 | **0.586500** |
+
+Kelima fold meningkat. Kenaikan konfirmasi **+0.001251** merupakan hasil validasi
+internal pada fold yang sudah pernah digunakan; belum membuktikan kenaikan
+leaderboard. Best leaderboard tetap **0.59242** sampai ada hasil upload baru.
+
+Kandidat upload: **`submissions/submission_regional.csv`**. Seluruh 228.629 baris
+sudah diperiksa untuk label integer 1–5, ID unik, urutan sample, dan nilai kosong.
+Lihat `reports/regional_verification.json` dan `reports/regional_class_comparison.csv`.
+Buat ulang prediksi dengan:
+
+```powershell
+python -m scripts.predict --model models/regional_ensemble.pkl --output submissions/submission_regional.csv
+```
+
+Pertahankan kelima `regional_medium_fold_*.pkl`, kelima `native_fold_*.pkl`, dan
+kelima `improved_wide_fold_*.pkl` bersama `regional_ensemble.pkl`. File submission
+improved berskor 0.59242 dan identitas SHA-256-nya tetap dipertahankan.

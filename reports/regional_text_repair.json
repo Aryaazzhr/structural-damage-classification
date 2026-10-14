@@ -1,0 +1,7 @@
+{
+  "reason": "Repair two text-only en-dash encoding errors in existing docstring/error message; no model or prediction behavior changed.",
+  "file": "scripts/predict.py",
+  "previous_sha256": "12e38efc0e45da8f6a73e70b01c30b57c376ed341e99b68962aed864ab1d1db4",
+  "current_sha256": "2c814d03e0792b2cacd4a20775e7565c562f5ff32e97fc11a1d60ede0022ec8e",
+  "line_endings": "Normalized to LF; AST identical before/after newline normalization"
+}

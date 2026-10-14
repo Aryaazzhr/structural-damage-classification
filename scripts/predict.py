@@ -66,5 +66,29 @@ def main():
     print(f'Saved {len(result):,} rows to {args.output}')
 
 
+class WeightedFoldPipelineEnsemble(FoldPipelineEnsemble):
+    """Combine differently sized sets of fold pipelines with explicit model weights."""
+
+    def __init__(self, model_files, weights, model_weights):
+        """Store class decision multipliers and positive per-pipeline mixing weights."""
+        super().__init__(model_files, weights)
+        coefficients = np.asarray(model_weights, dtype=float)
+        if len(coefficients) != len(model_files) or not np.isfinite(coefficients).all() or (coefficients <= 0).any():
+            raise ValueError('Each model requires one finite positive mixing weight.')
+        self.model_weights = coefficients / coefficients.sum()
+
+    def predict_proba(self, X):
+        """Load each pipeline once and combine probabilities in integer class order."""
+        probabilities = np.zeros((len(X), 5))
+        for filename, coefficient in zip(self.model_files, self.model_weights):
+            pipeline = joblib.load(ROOT / 'models' / filename)
+            if not np.array_equal(pipeline.classes_, self.classes_):
+                raise ValueError('Unexpected fold class order.')
+            probabilities += coefficient * pipeline.predict_proba(X)
+            del pipeline
+            gc.collect()
+        return probabilities
+
+
 if __name__ == '__main__':
     main()

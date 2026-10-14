@@ -1,0 +1,74 @@
+{
+  "selection": {
+    "name": "medium",
+    "alpha": 0.5,
+    "weights": [
+      0.6750000000000002,
+      0.9333333333333333,
+      1.0625,
+      0.9708333333333334,
+      1.0
+    ],
+    "selection_macro_f1": 0.5859837996894404
+  },
+  "config": {
+    "name": "medium",
+    "model__n_estimators": 700,
+    "model__num_leaves": 127,
+    "model__min_child_samples": 80,
+    "model__reg_lambda": 5
+  },
+  "cv_macro_f1": 0.5863962218234497,
+  "confirmation_macro_f1": 0.5864995272727616,
+  "baseline_confirmation_macro_f1": 0.5852481089416942,
+  "baseline_cv_macro_f1": 0.5852619110019079,
+  "classification_report": {
+    "1": {
+      "precision": 0.6945522072477891,
+      "recall": 0.6847199564980968,
+      "f1-score": 0.6896010368842359,
+      "support": 55170.0
+    },
+    "2": {
+      "precision": 0.44106651836747307,
+      "recall": 0.4674525212835625,
+      "f1-score": 0.45387635716216,
+      "support": 61080.0
+    },
+    "3": {
+      "precision": 0.45422794288854323,
+      "recall": 0.5107448056300268,
+      "f1-score": 0.48083132452910177,
+      "support": 95488.0
+    },
+    "4": {
+      "precision": 0.5637915324286504,
+      "recall": 0.5384914251967892,
+      "f1-score": 0.5508511289431534,
+      "support": 128691.0
+    },
+    "5": {
+      "precision": 0.7752815703830879,
+      "recall": 0.7392196274270084,
+      "f1-score": 0.7568212615985976,
+      "support": 193036.0
+    },
+    "accuracy": 0.6131480040864912,
+    "macro avg": {
+      "precision": 0.5857839542631087,
+      "recall": 0.5881256672070967,
+      "f1-score": 0.5863962218234497,
+      "support": 533465.0
+    },
+    "weighted avg": {
+      "precision": 0.6201798718688802,
+      "recall": 0.6131480040864912,
+      "f1-score": 0.6160947959205817,
+      "support": 533465.0
+    }
+  },
+  "protocol": "Regional feature pipeline capacity and blend selected on fold 0 only; class decision weights fixed to incumbent 0.59242 ensemble. Frozen for folds 1-4. These folds have historical reuse; this is not a fresh unbiased benchmark.",
+  "baseline_leaderboard_user_reported": 0.59242,
+  "new_leaderboard": null,
+  "confirmation_improved": true
+}
