@@ -1,16 +1,22 @@
 # Structural Damage Classification
 
-Proyek akademik machine learning tradisional untuk klasifikasi kerusakan bangunan
-Grade 1–5. Metrik kompetisi adalah **F1-macro**: F1 dihitung per kelas, kemudian
-dirata-ratakan tanpa pembobotan jumlah sampel. **Tidak menggunakan neural network.**
+Dalam proyek ini, saya mengeksplorasi pendekatan machine learning tradisional untuk mengklasifikasikan tingkat kerusakan bangunan ke dalam **Grade 1–5** pada kompetisi Kaggle Structural Damage Classification. Fokus saya adalah membangun alur eksperimen yang dapat direproduksi dan mengevaluasi model menggunakan **F1-macro**, sehingga setiap kelas memiliki kontribusi yang sama terhadap skor.
 
-## Hasil terbaik saat ini
+Model akhir menggunakan ensemble LightGBM dengan preprocessing melalui **Scikit-Learn Pipeline dan ColumnTransformer**. Proyek ini tidak menggunakan neural network.
 
-- F1-macro leaderboard: **0.59578**, dilaporkan pengguna (sebelumnya 0.59326; naik 0.00252).
-- F1-macro CV: **0.588670**; fold konfirmasi: **0.588776**.
-- Submission: `submissions/submission_diverse.csv`.
-- Model: `models/diverse_ensemble.pkl`, beserta lima fold dari setiap keluarga diverse_sampled, regional_medium, native, dan improved_wide.
-- Catatan identitas file dan riwayat: `reports/leaderboard_best.json` serta `reports/leaderboard_history.json`.
+## Hasil utama
+
+| Metrik | Hasil |
+| --- | ---: |
+| F1-macro leaderboard terbaik | **0.59578** |
+| F1-macro out-of-fold, 5 fold | **0.588670** |
+| F1-macro gabungan fold konfirmasi 1–4 | **0.588776** |
+| Jumlah data training | 533.465 |
+| Jumlah data test | 228.629 |
+
+Submission terbaik adalah `submissions/submission_diverse.csv`, yang dihasilkan oleh `models/diverse_ensemble.pkl`. Riwayat skor dan identitas SHA-256 submission tersedia di [leaderboard_history.json](reports/leaderboard_history.json) dan [leaderboard_best.json](reports/leaderboard_best.json).
+
+Skor leaderboard dicatat dari hasil submission Kaggle, sedangkan skor CV dihitung dari prediksi validasi lokal. Keduanya menggunakan data evaluasi berbeda dan tidak diharapkan bernilai sama.
 
 ## Struktur repositori
 
@@ -37,448 +43,176 @@ scripts/
     feature_engineering.py
     train.py
     predict.py
-models/                 # pipeline .pkl; tidak di-commit
-submissions/            # submission.csv; tidak di-commit
+models/
+submissions/
 reports/
-    figures/            # gambar hasil analisis
+    figures/
 ```
 
-Folder kosong memakai `.gitkeep` agar ikut tersimpan di Git. Metadata tambahan,
-ringkasan EDA, dan laporan historis berada di reports/. Arsip eksperimen sebelumnya
-tersimpan di folder saudara `../structural-damage-classification-archive-20261012`,
-bukan bagian dari repositori akademik ini.
+Folder `models/` menyimpan model `.pkl`, sedangkan `submissions/` menyimpan file prediksi. Dataset, metadata kompetisi, model biner, prediksi mentah, dan submission tetap disimpan secara lokal serta dikecualikan dari Git. File `.gitkeep` mempertahankan folder kosong pada repositori.
 
-## Mengunduh data Kaggle
+## Data
 
-1. Masuk ke akun Kaggle dan buka halaman kompetisi **Structural Damage Classification**
-   yang diberikan pengajar. Cari melalui [Kaggle Competitions](https://www.kaggle.com/competitions)
-   jika belum memiliki tautannya. URL/slug kompetisi tidak diasumsikan dari nama folder.
-2. Setujui peraturan kompetisi jika diminta, buka tab **Data**, lalu unduh berkas data.
-3. Ekstrak `train.csv`, `test.csv`, dan `sample_submission.csv` langsung ke `data/`.
-   Jangan meletakkannya dalam `data/raw/` atau folder ZIP bertingkat.
-4. Jika tersedia, simpan `metadata.csv` sebagai informasi variabel di `reports/metadata.csv`.
-5. Dataset tidak disertakan dalam Git. Pengguna repositori harus mengunduhnya sendiri.
+Saya menggunakan `train.csv` untuk pengembangan dan validasi model, `test.csv` untuk prediksi submission, serta `sample_submission.csv` sebagai acuan kolom dan urutan ID. Informasi tambahan variabel tersedia pada `metadata.csv`.
 
-## Instalasi dan menjalankan kode
+Untuk menyiapkan data:
 
-Gunakan Python 3.11 atau lebih baru. Jalankan perintah berikut **dari direktori proyek**:
+1. Masuk ke Kaggle dan buka kompetisi **Structural Damage Classification** sesuai tautan kelas. Halaman kompetisi dapat dicari melalui [Kaggle Competitions](https://www.kaggle.com/competitions).
+2. Setujui aturan kompetisi, kemudian unduh dataset melalui tab **Data**.
+3. Ekstrak `train.csv`, `test.csv`, dan `sample_submission.csv` langsung ke folder `data/`.
+4. Jika tersedia, simpan `metadata.csv` di `reports/metadata.csv`.
+
+Dataset tidak disertakan di GitHub. Label target training berbentuk `Grade N` dipetakan ke integer **1–5**. Submission menggunakan angka 1–5 karena evaluator menolak label teks seperti `Grade 1`. Label pada sample submission hanya merupakan contoh format, bukan target untuk training.
+
+## Instalasi
+
+Gunakan Python 3.11 atau lebih baru. Jalankan perintah berikut dari root repositori:
 
 ```powershell
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
-python -m scripts.train --restore-v2
-python -m scripts.predict --model models/native_ensemble.pkl --output submissions/submission_native.csv
 ```
 
-Mode native menyimpan lima pipeline `models/native_fold_*.pkl` dan pemuat ensemble
-`models/native_ensemble.pkl`. Hasilnya ada di `reports/native_model_metrics.json`
-dan `submissions/submission_native.csv`. Perintah predict di atas membuat ulang
-submission native dengan urutan ID sesuai contoh.
-
-Mode baseline terpisah (`--model lightgbm`, `--model random_forest`, atau
-`--model logistic_regression`) menyimpan `models/model.pkl`,
-`models/model.metrics.json`, `reports/model_metrics.json`, dan confusion matrix
-holdout. Perintah predict tanpa argumen memakai model baseline tersebut dan
-**mengganti** `submissions/submission.csv`; gunakan argumen model native seperti
-contoh di atas untuk workflow yang dipulihkan.
-
-Pilihan algoritma: `random_forest` (default), `logistic_regression`, dan `lightgbm`.
-Opsi `--use-id-features` mengaktifkan hipotesis pola ID; default nonaktif karena ID
-bukan koordinat geografis yang terverifikasi. Tuning dapat membutuhkan waktu lama.
-Untuk uji alur singkat tanpa mengganti model utama:
-
-```powershell
-python -m scripts.train --model logistic_regression --sample-size 2000 --output models/smoke.pkl
-```
-
-Model dari subset hanya untuk pengujian program, bukan submission utama.
-Pipeline `.pkl` dapat dibuka dengan `joblib.load`; muat hanya model yang dipercaya.
-
-Kerangka telah diuji pada 1.000 baris: tuning F1-macro, serialisasi pipeline,
-prediksi kategori baru/missing, serta penyelarasan ID. Random Forest dan LightGBM
-juga diuji fit/predict pada subset kecil. Hasil pemeriksaan tercatat di
-`reports/framework_validation.json`; pengujian ini bukan evaluasi performa final.
-
-Untuk notebook:
+Untuk membuka notebook:
 
 ```powershell
 python -m jupyterlab
 ```
 
-Jalankan berurutan: `01_eda.ipynb`, `02_modeling.ipynb`, `03_submission.ipynb`.
-Notebook menggunakan modul yang sama, sehingga implementasi tidak diduplikasi.
+## Metode
 
-## Workflow dan pencegahan kebocoran data
+### Preprocessing dan feature engineering
 
-1. Baca label training dan ubah `Grade N` menjadi integer 1–5. Label dalam sample
-   submission adalah contoh format, **bukan** label untuk training/evaluasi.
-2. Sisihkan 20% data sebagai holdout stratified dengan seed 42.
-3. Gunakan satu `Pipeline`: `BuildingFeatures` → `ColumnTransformer` → classifier.
-   Fitur meliputi rasio tinggi/luas per lantai dan penanda umur sentinel >=995.
-4. Cabang numerik menggunakan median imputation dan scaling; cabang kategori
-   menggunakan imputation modus dan `OneHotEncoder` yang menangani kategori baru.
-   Parameter preprocessing dipelajari hanya dari training fold.
-5. `RandomizedSearchCV` menala parameter pipeline dengan 3-fold stratified CV,
-   scoring `f1_macro`, hanya pada 80% bagian training. Holdout tidak dipakai tuning.
-6. Laporkan F1-macro, classification report, dan confusion matrix pada holdout.
-   Kemudian refit pipeline terpilih pada seluruh baris training dan simpan `.pkl`.
-7. Prediksi test melalui pipeline yang sama. Validasi ID unik, urutan ID, tidak ada
-   nilai kosong, dan label numerik 1–5 sebelum menulis submission.
+Baseline umum menggunakan `BuildingFeatures` → `ColumnTransformer` → classifier dalam satu Pipeline. Kolom numerik memakai median imputation dan scaling, sedangkan kolom kategorikal memakai imputasi modus dan one-hot encoding. Random Forest, Logistic Regression, dan LightGBM tersedia sebagai pilihan classifier. Tuning baseline menggunakan `RandomizedSearchCV` dengan scoring `f1_macro` pada training folds.
 
-Semua function dan class di scripts/ memiliki docstring. Penambahan model harus
-tetap memakai pipeline ini; neural network dilarang.
+Pada eksperimen LightGBM native, saya mempertahankan kategori sebagai tipe kategorikal pandas melalui `NativeCategories`. Vocabulary kategori hanya dipelajari dari training fold; kategori baru menjadi missing. Umur sentinel ≥995 diperlakukan sebagai nilai tidak diketahui dan ditangani oleh LightGBM.
 
-## Interpretasi hasil analisis
+Fitur yang digunakan meliputi:
 
-Dataset yang tersedia memiliki 533.465 baris training dan 228.629 baris test.
-Training tidak memiliki nilai kosong pada kolom asli, tetapi umur sentinel perlu
-ditangani sebagai nilai tidak diketahui. Distribusi kelas tidak seimbang: Grade 5
-paling dominan. Karena itu accuracy/F1-micro tidak dapat menggantikan F1-macro.
-Pembobotan kelas dipakai untuk memberi perhatian pada kelas yang lebih jarang.
+- Rasio tinggi dan luas per lantai, volume proxy, rasio luas terhadap tinggi, serta transformasi log.
+- Kelompok umur, jumlah lantai, material, dan kategori wilayah.
+- Prefix dan suffix ID sebagai hipotesis pola data. Fitur ID tidak dianggap sebagai koordinat geografis yang telah diverifikasi.
+- Median umur, luas, dan tinggi per ward; rasio terhadap median; serta jumlah baris training per ward.
+- Kombinasi district-material, foundation-material, dan roof-ground-floor.
 
-Grafik distribusi target, umur, dan hubungan material bangunan dengan target
-tersimpan di `reports/figures/`. Pola asosiasi pada grafik tidak membuktikan sebab-akibat.
-Interpretasi dan angka rinci tersedia di notebook EDA dan `reports/eda_summary.json`.
+Statistik regional dihitung dari fitur training fold tanpa menggunakan label. Ward yang belum dikenal memakai median global training. Seluruh function dan class pada `scripts/` memiliki docstring.
 
-### Hasil eksperimen historis
+### Validasi dan pemilihan model
 
-| Eksperimen lama | CV F1-macro | Leaderboard dilaporkan pengguna |
+Baseline one-hot memakai holdout stratified 20%. Eksperimen native dan ensemble memakai **StratifiedKFold(5, shuffle=True, random_state=42)** agar perbandingan antarversi menggunakan split yang sama.
+
+Fold 0 digunakan untuk memilih kandidat atau proporsi ensemble. Pilihan kemudian dibekukan sebelum evaluasi fold konfirmasi 1–4. Bobot loss menggunakan akar inverse frekuensi kelas yang dihitung dari training fold. Bobot keputusan kelas dioptimalkan pada tahap awal; eksperimen regional dan sampled mempertahankan bobot dari ensemble improved.
+
+Fold yang sama telah digunakan berulang dalam pengembangan, sehingga hasil ini merupakan **validasi internal**, bukan benchmark baru yang sepenuhnya bebas bias. Skor OOF seluruh fold juga mencakup fold pemilihan kandidat. Kenaikan CV tidak menjamin kenaikan leaderboard.
+
+### Ensemble akhir
+
+Model akhir berisi 20 Pipeline: lima model untuk setiap keluarga berikut.
+
+| Keluarga model | Kontribusi probabilitas |
+| --- | ---: |
+| Sampled LightGBM | 50% |
+| Regional LightGBM | 25% |
+| Native LightGBM | 12.5% |
+| Wide LightGBM | 12.5% |
+
+Komponen sampled menggunakan seed 137, 900 pohon, learning rate 0.03, 127 leaves, sampling baris 0.85 setiap iterasi, sampling fitur 0.75, `min_child_samples=60`, dan `reg_lambda=5`. Probabilitas tiap keluarga dirata-ratakan antar-fold, digabungkan sesuai proporsi di atas, lalu dikalikan dengan bobot keputusan kelas yang dibekukan.
+
+## Ringkasan eksperimen
+
+| Eksperimen | F1-macro lokal | F1-macro leaderboard |
 | --- | ---: | ---: |
-| V1 | 0.572537 | 0.57842 |
-| V2 | 0.582838 | belum diketahui |
-
-V2 lama memperbaiki F1-macro sekitar 1,03 poin persentase dengan pembobotan kelas
-dan keputusan prediksi. Lihat `reports/legacy_v2_report.json`. Angka F1-micro lama
-0.607106 bukan metrik kompetisi. Submission yang dipertahankan saat penataan berasal
-dari eksperimen V2 lama. Baseline one-hot tersedia di `models/model.pkl`; hasil pemulihan native terbaru tersedia di `models/native_ensemble.pkl`.
-
-Baseline akademik one-hot menggunakan preprocessing dan skema holdout yang berbeda.
-Jangan mengatribusikan skor historis tersebut ke pipeline baru atau membandingkan
-CV dan holdout seolah-olah protokolnya sama. Hasil baseline tersedia pada `reports/model_metrics.json`;
-hasil leaderboard hanya diketahui setelah upload.
-
-## Aturan Git/GitHub
-
-`.gitignore` mengecualikan **semua `data/*.csv`**, termasuk train/test/sample, ZIP,
-model besar, submission, environment, dan kredensial. Dataset tetap tidak boleh
-di-commit meskipun ukurannya kurang dari 100 MB. Jangan gunakan `git add -f` pada data.
-
-Jika belum berupa repositori Git:
-
-```powershell
-git init
-git check-ignore data/train.csv data/test.csv data/sample_submission.csv
-git add README.md .gitignore requirements.txt notebooks scripts reports data/.gitkeep models/.gitkeep submissions/.gitkeep
-git status --short
-git ls-files "data/*.csv"
-```
-
-Perintah terakhir harus kosong. Jika CSV pernah dilacak, hapus dari index dengan
-`git rm --cached -- data/train.csv data/test.csv data/sample_submission.csv` sebelum
-commit; ini tidak menghapus file lokal. Mengabaikan file tidak menghapusnya dari
-riwayat commit lama. Audit riwayat terlebih dahulu jika dataset pernah di-push.
-Commit dan push hanya sesudah memeriksa staged files. Repositori ini menyimpan kode, notebook, laporan agregat, dan gambar; dataset, metadata kompetisi, model biner, dan prediksi mentah tetap lokal.
-
-## Hasil baseline akademik one-hot
-
-LightGBM default tanpa tuning dan tanpa fitur ID telah dijalankan pada seluruh
-533.465 baris. Holdout 106.693 baris menghasilkan **F1-macro 0.508215**. Setelah
-evaluasi, pipeline di-refit pada seluruh training dan disimpan di `models/model.pkl`.
-
-Hasil ini **belum sama** dengan CV V2 historis 0.582838. Pipeline akademik mengganti
-kategori native menjadi one-hot encoding (maksimum 128 kategori per kolom),
-menonaktifkan fitur ID, dan menggunakan parameter/pembobotan serta keputusan kelas
-yang berbeda. Protokol holdout juga berbeda dari CV lama, sehingga selisih angka
-0.074624 bukan estimasi perbandingan dengan protokol identik. Tuning baru belum
-dijalankan. Submission V2 lama tidak ditimpa. Lihat `reports/score_comparison.json`.
-
-## Pemulihan performa V2 dengan Pipeline akademik
-
-Mode yang direkomendasikan untuk membandingkan dengan V2 lama adalah
-`python -m scripts.train --restore-v2`. Mode baseline one-hot tetap tersedia
-melalui `--model lightgbm`, tetapi tidak mereproduksi metode V2.
-
-Pipeline native menggunakan `NativeBuildingFeatures`, `ColumnTransformer`
-dengan vocabulary kategori per training fold, dan LightGBM native categorical.
-Tidak ada pemangkasan kategori menjadi 128 level. Fitur log, rasio, bin umur,
-serta pola awalan/akhiran ID dipulihkan. Umur sentinel tetap menjadi missing,
-yang ditangani langsung oleh LightGBM. Tidak ada neural network.
-
-Validasi memakai StratifiedKFold(5, shuffle=True, random_state=42) seperti V2.
-Pembobotan loss menggunakan akar inverse frekuensi kelas dari training fold.
-Setelan model menggunakan konfigurasi V2 dengan 500 pohon tetap per fold;
-berbeda dari early stopping historis. Pengali keputusan dioptimalkan hanya
-pada fold 0, kemudian dibekukan untuk empat fold konfirmasi. Ini bukan nested CV
-atau benchmark baru yang bebas bias karena konfigurasi historis berasal dari
-percobaan terdahulu pada dataset yang sama. Skor tidak dijamin identik.
-
-Setiap fold benar-benar dilatih melalui Pipeline; tidak mengimpor model arsip.
-Output baru terpisah dari model/submission baseline:
-
-- `models/native_fold_0.pkl` sampai `native_fold_4.pkl`: lima pipeline lengkap.
-- `models/native_ensemble.pkl`: pemuat kelima pipeline dan bobot keputusan.
-  Semua file fold harus dipertahankan bersama file ensemble.
-- `reports/native_model_metrics.json`: skor CV dan empat fold konfirmasi.
-- `reports/native_fold_scores.csv`: skor per fold.
-- `submissions/submission_native.csv`: prediksi integer 1–5.
-
-Jalankan kembali perintah yang sama untuk melanjutkan checkpoint. Manifest
-memeriksa SHA-256 data/kode dan versi library agar hasil lama tidak dipakai
-untuk konfigurasi baru. Jangan mengubah kode selama training berjalan.
-
-
-## Hasil pemulihan native: run lengkap 13 Oktober 2026
-
-Kelima fold telah dilatih ulang pada 533.465 baris menggunakan Pipeline dan
-ColumnTransformer. F1-macro dihitung ulang secara independen dengan sklearn.
-
-| Evaluasi | V2 historis | Pipeline native baru |
-| --- | ---: | ---: |
-| OOF seluruh 5 fold | 0.582838 | **0.583325** |
-| Gabungan fold konfirmasi 1–4 | 0.582800 | **0.583310** |
-
-Peningkatan OOF sebesar 0.000487 (sekitar 0.049 poin persentase) bersifat kecil;
-ini menunjukkan performa berhasil dipulihkan, bukan bukti peningkatan yang
-signifikan secara statistik. Split sama dengan V2, tetapi jumlah pohon tetap dan
-vocabulary kategori per fold berbeda. Fold 0 digunakan untuk memilih pengali
-keputusan sehingga skor OOF keseluruhan mencakup fold pemilihan tersebut.
-
-Skor per fold (0 sampai 4): 0.583386, 0.582378, 0.583208, 0.585077, 0.582574.
-Laporan rinci: `reports/native_model_metrics.json` dan
-`reports/native_verification.json`. Prediksi dari ensemble yang dimuat ulang
-identik dengan hasil training pada 256 baris test yang tersebar (selisih maksimum
-probabilitas 0). Kelima model terverifikasi menggunakan Pipeline/ColumnTransformer.
-
-**File yang direkomendasikan untuk upload: `submissions/submission_native.csv`.**
-Seluruh 228.629 baris telah diperiksa: urutan ID sama dengan sample submission,
-ID unik, tidak ada missing, serta damage_grade berupa integer 1–5. Label tidak
-mengandung teks "Grade". `submissions/submission.csv` historis tetap dipertahankan.
-Skor leaderboard submission native kemudian dilaporkan pengguna sebesar **0.59005**. Skor 0.57842 adalah hasil V1 yang lebih awal.
-
-
-## Eksperimen peningkatan setelah leaderboard 0.59005
-
-Pengguna melaporkan F1-macro leaderboard **0.59005** untuk
-`submissions/submission_native.csv`. Identitas file (SHA-256) disimpan di
-`reports/leaderboard_history.json`; file dan kelima model native dipertahankan.
-
-Notebook `notebooks/04_improve.ipynb` menguji LightGBM native dengan kapasitas
-63/127/255 leaves, 700–1000 pohon, dan regularisasi lambda 5. Setiap kandidat
-menggunakan Pipeline serta ColumnTransformer yang sama. Semua kategori dan
-bobot kelas dipelajari hanya dari training fold. Pemilihan kandidat, campuran
-probabilitas (50% atau 100% kandidat baru), dan pengali keputusan dilakukan pada
-fold 0. Selanjutnya konfigurasi dibekukan untuk fold 1–4. Karena dataset pernah
-dipakai untuk eksperimen sebelumnya, hasil ini tetap merupakan validasi internal.
-
-Jalankan semua cell notebook, atau dari root proyek di PowerShell:
-
-```powershell
-python -u -c "import json; from pathlib import Path; nb=json.loads(Path('notebooks/04_improve.ipynb').read_text()); exec(compile(''.join(nb['cells'][1]['source']), '04_improve.ipynb', 'exec'))"
-```
-
-Checkpoint `improved_*` dapat dilanjutkan dengan menjalankan notebook kembali.
-Jangan mengubah notebook/data/kode selama run; manifest mendeteksi perubahan
-untuk mencegah pemakaian checkpoint yang tidak cocok. Hasil seleksi tersimpan di
-`reports/improved_selection.json`; hasil akhir, jika kandidat mengalahkan baseline
-pada fold seleksi, di `reports/improved_model_metrics.json`. Model ensemble baru
-memerlukan semua file fold yang dirujuk di atribut `model_files`.
-
-
-Kandidat terpilih pada fold 0: **255 leaves, 700 pohon, min_child_samples=100,
-reg_lambda=5**, dengan penggabungan probabilitas 50:50 terhadap model native lama.
-Skor seleksi 0.585319 versus baseline 0.583386. Seluruh setelan lain dan fitur tetap
-sama. Tabel seluruh kandidat tersedia di `reports/improved_selection.json` dan
-grafiknya di `reports/figures/improved_selection.png`.
-
-Setelah training selesai, prediksi dapat dibuat ulang melalui:
-
-```powershell
-python -m scripts.predict --model models/improved_ensemble.pkl --output submissions/submission_improved.csv
-```
-
-Ensemble ini membutuhkan lima `models/improved_wide_fold_*.pkl` dan lima
-`models/native_fold_*.pkl` di direktori models/. Dua model kandidat seleksi lainnya
-(compact dan long) tidak dipakai dalam ensemble akhir.
-
-
-### Hasil eksperimen peningkatan lengkap
-
-| Metrik | Model leaderboard 0.59005 | Ensemble baru |
-| --- | ---: | ---: |
-| OOF F1-macro (5 fold) | 0.583325 | **0.585262** |
-| F1-macro gabungan fold konfirmasi 1–4 | 0.583310 | **0.585248** |
-
-Kelima fold meningkat dibanding baseline. Selisih OOF +0.001937 (sekitar 0.194
-poin persentase); selisih konfirmasi +0.001938. Ini hasil validasi internal,
-bukan jaminan kenaikan leaderboard. F1 grade 1, 2, 3, dan 5 meningkat, tetapi
-F1 grade 4 turun dari 0.559855 menjadi 0.550310. Lihat
-`reports/improved_class_comparison.csv` untuk trade-off per kelas serta
-`reports/figures/improved_comparison.png` untuk grafik perbandingan.
-
-**Hasil historis ensemble improved: `submissions/submission_improved.csv` (leaderboard 0.59242).**
-Seluruh 228.629 baris lulus validasi ID, urutan sample submission, nilai yang
-hilang, dan label integer 1–5. Kesepuluh model terverifikasi sebagai sklearn
-Pipeline dengan ColumnTransformer. Uji pemuatan ulang ensemble pada 256 baris
-test cocok dengan probabilitas saat training (selisih maksimum 2.23e-16).
-Detail pemeriksaan ada di `reports/improved_verification.json`.
-
-File `submissions/submission_native.csv` yang memperoleh 0.59005 tetap utuh
-(terverifikasi SHA-256). Skor leaderboard ensemble baru **0.59242**, dilaporkan pengguna; naik **0.00237** dari 0.59005. File terbaik pada tahap eksperimen ini adalah `submissions/submission_improved.csv`; hasil terbaru lihat bagian Hasil terbaik saat ini. Riwayat hasil tersimpan di `reports/leaderboard_history.json`.
-
-
-## Optimasi bobot keputusan lanjutan
-
-Notebook `notebooks/05_calibrate.ipynb` mengoptimalkan empat pengali probabilitas
-kelas secara bersama-sama menggunakan differential evolution (tiga seed tetap).
-Grade 5 menjadi acuan dengan bobot 1. Optimasi hanya memakai fold 0; bobot terpilih
-dibekukan sebelum evaluasi fold 1–4. Classifier tetap ensemble sepuluh sklearn
-Pipeline/ColumnTransformer sebelumnya, tanpa neural network atau training baru.
-
-| Evaluasi | Ensemble leaderboard 0.59242 | Bobot baru |
-| --- | ---: | ---: |
-| OOF F1-macro | 0.585262 | **0.585680** |
-| Gabungan fold konfirmasi 1–4 | 0.585248 | **0.585604** |
-
-Peningkatan konfirmasi +0.000356 sangat kecil. Fold historis telah dipakai berulang
-kali sehingga ini validasi internal, bukan bukti peningkatan yang signifikan atau
-jaminan leaderboard. Pengguna melaporkan skor leaderboard **0.59225** untuk
-`submissions/submission_calibrated.csv`, turun **0.00017** dari hasil terbaik.
-Kenaikan CV tidak berlanjut pada leaderboard. Pada tahap kalibrasi, submission yang direkomendasikan
-tetap **`submissions/submission_improved.csv` (0.59242)** dengan model
-`models/improved_ensemble.pkl`. Eksperimen calibrated dipertahankan untuk
-reproduksi dan perbandingan, bukan sebagai model terbaik.
-
-Reproduksi dari clone baru:
-
-1. Unduh data ke data/ dan instal requirements.txt sesuai petunjuk di atas.
-2. Jalankan `python -m scripts.train --restore-v2` untuk menghasilkan baseline
-   lima fold beserta probabilitas lokal.
-3. Jalankan seluruh cell `notebooks/04_improve.ipynb` untuk menghasilkan ensemble
-   improved dan `reports/improved_predictions.npz`.
-4. Jalankan seluruh cell `notebooks/05_calibrate.ipynb` untuk optimasi bobot dan
-   menghasilkan `models/calibrated_ensemble.pkl` serta submission baru.
-
-Setelah model tersedia, buat ulang prediksi dengan:
-
-```powershell
-python -m scripts.predict --model models/calibrated_ensemble.pkl --output submissions/submission_calibrated.csv
-```
-
-Model calibrated tetap memerlukan lima file native_fold dan lima file
-improved_wide_fold. Verifikasi seluruh baris submission dan uji pemuatan ulang
-model tersedia di `reports/calibrated_verification.json`. Dataset CSV, metadata
-kompetisi, model, checkpoint probabilitas NPZ, dan submission tidak disertakan
-dalam Git; pengguna perlu menjalankan workflow untuk mereproduksinya.
-
-
-## Eksperimen fitur regional
-
-`notebooks/06_regional.ipynb` menambahkan fitur dengan `RegionalBuildingFeatures`:
-median umur/luas/tinggi per ward, rasio terhadap median, jumlah baris training per
-ward, prefix ID 9/10 digit, serta kombinasi district-material, foundation-material,
-dan roof-ground-floor. Statistik dipelajari dari training fold saja tanpa label;
-ward baru memakai median global training. Prefix ID adalah hipotesis pola data,
-bukan koordinat yang telah diverifikasi.
-
-Dua kapasitas LightGBM (127/255 leaves, 700 pohon) dan blend 50%/100% dipilih pada
-fold 0. Bobot keputusan kelas tetap berasal dari ensemble leaderboard 0.59242.
-Pilihan dibekukan untuk fold konfirmasi 1–4. Jika model regional terpilih,
-`WeightedFoldPipelineEnsemble` menjaga bobot campuran yang tepat meskipun jumlah
-model komponennya berbeda. Hasil seleksi dan konfirmasi tersimpan terpisah di
-`reports/regional_selection.json` dan `reports/regional_model_metrics.json`.
-
-Jalankan notebook 06 setelah workflow 04 menghasilkan probabilitas/model improved.
-Penambahan kelas fitur/ensemble ini tidak mengubah perilaku kelas lama, sehingga
-model lama tetap dapat dipakai untuk prediksi. Manifest lama secara sengaja menolak
-resume training ketika hash modul berubah. Untuk mereproduksi checkpoint eksperimen
-lama persis, gunakan commit `9fb4dda` di checkout terpisah; jangan menghapus model
-terbaik untuk mengatasi ketidakcocokan manifest. Clone baru tanpa checkpoint dapat
-menjalankan urutan training dari awal.
-
-
-### Hasil eksperimen regional lengkap
-
-Kandidat terpilih memakai **127 leaves, 700 pohon**, dan blend probabilitas
-**50% model regional + 50% ensemble terbaik sebelumnya**. Bobot keputusan kelas
-tidak dioptimalkan ulang. Ensemble berisi 15 pipeline: lima regional, lima native,
-dan lima improved_wide.
-
-| Evaluasi | Ensemble leaderboard 0.59242 | Ensemble regional |
-| --- | ---: | ---: |
-| OOF F1-macro | 0.585262 | **0.586396** |
-| Gabungan fold konfirmasi 1–4 | 0.585248 | **0.586500** |
-
-Kelima fold meningkat. Kenaikan konfirmasi **+0.001251** merupakan hasil validasi
-internal pada fold yang sudah pernah digunakan. Pengguna kemudian melaporkan
-**leaderboard 0.59326**, naik **0.00084** dari 0.59242. Ensemble regional menjadi
-model terbaik pada tahap eksperimen regional; hasil terkini ada di bagian Hasil terbaik saat ini.
-
-Hasil historis regional: **`submissions/submission_regional.csv` (0.59326)**. Seluruh 228.629 baris
-sudah diperiksa untuk label integer 1–5, ID unik, urutan sample, dan nilai kosong.
-Lihat `reports/regional_verification.json` dan `reports/regional_class_comparison.csv`.
-Buat ulang prediksi dengan:
-
-```powershell
-python -m scripts.predict --model models/regional_ensemble.pkl --output submissions/submission_regional.csv
-```
-
-Pertahankan kelima `regional_medium_fold_*.pkl`, kelima `native_fold_*.pkl`, dan
-kelima `improved_wide_fold_*.pkl` bersama `regional_ensemble.pkl`. File submission
-improved berskor 0.59242 dan identitas SHA-256-nya tetap dipertahankan.
-
-
-## Eksperimen lanjutan setelah leaderboard 0.59326
-
-Notebook 07 menguji grid kecil campuran tiga keluarga model dengan bobot kelas
-beku. Campuran terpilih pada fold 0 (native 37.5%, wide 12.5%, regional 50%)
-menurunkan F1-macro konfirmasi dari 0.586500 menjadi 0.586320. Kandidat ini ditolak
-untuk rekomendasi upload dan tidak menghasilkan submission baru. Lihat
-`reports/blend_model_metrics.json`; hasil negatif tetap dicatat agar eksperimen
-bisa ditelusuri.
-
-Notebook 08 menguji satu konfigurasi tambahan LightGBM native: seed 137,
-900 pohon, learning_rate 0.03, 127 leaves, subsample 0.85 setiap iterasi,
-colsample_bytree 0.75, min_child_samples 60 dan reg_lambda 5. Pipeline dan
-ColumnTransformer tetap digunakan. Kontribusi 25% atau 50% model baru dipilih
-pada fold 0, lalu dibekukan untuk konfirmasi fold 1–4. Bobot keputusan kelas
-sama dengan model leaderboard 0.59326, tanpa kalibrasi ulang. Model baru hanya
-direkomendasikan jika skor konfirmasi meningkat; hasil leaderboard tetap perlu
-upload. Semua fold ini pernah dipakai dalam eksperimen historis sehingga
-hasilnya tetap validasi internal.
-
-
-### Hasil ensemble dengan sampling
-
-Campuran yang dipilih pada fold 0 adalah **50% model sampled + 50% ensemble
-regional sebelumnya**. Proporsi akhir: sampled 50%, regional_medium 25%, native
-12.5%, improved_wide 12.5%. Total 20 pipeline; bobot keputusan kelas tidak berubah.
-
-| Evaluasi | Ensemble leaderboard 0.59326 | Ensemble sampled |
-| --- | ---: | ---: |
-| OOF F1-macro | 0.586396 | **0.588670** |
-| Gabungan fold konfirmasi 1–4 | 0.586500 | **0.588776** |
-
-Kenaikan OOF +0.002274 dan konfirmasi +0.002277. Kelima fold meningkat. Ini hasil
-validasi internal. Pengguna kemudian melaporkan **leaderboard 0.59578**, naik
-**0.00252** dari 0.59326. Ensemble sampled menjadi hasil leaderboard terbaik
-yang telah dilaporkan.
-
-Submission terbaik: **`submissions/submission_diverse.csv` (0.59578)**.
-Seluruh 228.629 baris diperiksa untuk ID unik, urutan sample, tidak ada missing,
-dan label integer 1–5. Pemeriksaan model tersimpan, probabilitas, dan kode ada di
-`reports/diverse_verification.json`; perbandingan kelas di
-`reports/diverse_class_comparison.csv`.
-
-Reproduksi: jalankan workflow native, notebook 04, notebook 06, kemudian seluruh
-cell notebook 08. Notebook 05 dan 07 tidak diperlukan untuk ensemble ini. Model
-beserta prediksi NPZ adalah artefak lokal yang dihasilkan dari training, bukan
-file yang harus diunduh dari GitHub. Setelah training selesai:
+| V1 historis, CV | 0.572537 | 0.57842 |
+| V2 historis, CV | 0.582838 | — |
+| Baseline one-hot, holdout | 0.508215 | — |
+| Native Pipeline, CV | 0.583325 | 0.59005 |
+| Improved ensemble, CV | 0.585262 | 0.59242 |
+| Kalibrasi bobot, CV | 0.585680 | 0.59225 |
+| Regional ensemble, CV | 0.586396 | 0.59326 |
+| Sampled ensemble, CV | **0.588670** | **0.59578** |
+
+Angka holdout baseline tidak dibandingkan langsung dengan CV sebagai pengukuran pada protokol identik. Baseline one-hot juga membatasi kategori per kolom menjadi 128 dan tidak memakai fitur ID secara default, sehingga metode tersebut berbeda dari model native.
+
+Dua hasil negatif menjadi bagian penting dalam evaluasi saya:
+
+- Kalibrasi bobot meningkatkan CV, tetapi leaderboard turun dari 0.59242 ke 0.59225. Karena itu, bobot tersebut tidak digunakan dalam ensemble akhir.
+- Pencarian ulang proporsi tiga keluarga model pada notebook 07 menurunkan skor konfirmasi dari 0.586500 ke 0.586320. Kandidat ini tidak direkomendasikan untuk submission.
+
+Penambahan komponen sampled meningkatkan skor CV dari 0.586396 ke 0.588670, skor konfirmasi dari 0.586500 ke 0.588776, dan leaderboard dari 0.59326 ke 0.59578. F1 kelima kelas serta kelima fold meningkat pada validasi lokal.
+
+Laporan lengkap tersedia di `reports/*_model_metrics.json`, `reports/*_fold_scores.csv`, dan [diverse_class_comparison.csv](reports/diverse_class_comparison.csv).
+
+## Interpretasi analisis
+
+Distribusi kelas tidak seimbang; Grade 5 merupakan kelas terbesar. Saya menggunakan F1-macro agar peningkatan pada kelas mayoritas tidak menutupi kinerja kelas lain. Grade 2 dan 3 masih relatif sulit dibedakan, sehingga menjadi perhatian utama untuk pengembangan selanjutnya.
+
+Fitur wilayah dan pola ID memberikan informasi prediktif yang kuat pada split saat ini. Namun, pola tersebut tidak membuktikan hubungan sebab-akibat dan belum menjamin model dapat digeneralisasikan ke wilayah baru. Median regional memberikan konteks ukuran bangunan terhadap lingkungannya, sedangkan kombinasi material membantu model menangkap hubungan antarjenis konstruksi.
+
+Hasil ensemble menunjukkan bahwa penggabungan model dapat membantu meskipun suatu komponen lebih lemah ketika digunakan sendiri. Peningkatan sampled ensemble konsisten dengan manfaat kombinasi model, tetapi bukan bukti kausal bahwa sampling saja menyebabkan seluruh kenaikan: beberapa parameter berubah bersama-sama.
+
+Grafik analisis tersedia di [reports/figures](reports/figures), termasuk distribusi target, distribusi umur, hubungan material-target, dan perbandingan eksperimen. Confusion matrix holdout pada folder tersebut berasal dari baseline one-hot, bukan model akhir.
+
+## Reproduksi model terbaik
+
+Setelah data dan dependensi siap, jalankan urutan berikut:
+
+1. Buka `notebooks/01_eda.ipynb` untuk eksplorasi data.
+2. Jalankan baseline native:
+
+   ```powershell
+   python -m scripts.train --restore-v2
+   ```
+
+3. Jalankan seluruh cell `notebooks/04_improve.ipynb` untuk ensemble improved.
+4. Jalankan seluruh cell `notebooks/06_regional.ipynb` untuk ensemble regional.
+5. Jalankan seluruh cell `notebooks/08_diverse.ipynb` untuk ensemble sampled dan submission terbaik.
+
+Notebook 02 dan 03 menjelaskan modeling serta pembuatan submission native. Notebook 05 dan 07 menyimpan eksperimen pembanding dan tidak diperlukan untuk menghasilkan ensemble akhir. Training dan prediksi penuh dapat membutuhkan waktu lama.
+
+Setelah seluruh model tersedia, submission dapat dibuat ulang melalui:
 
 ```powershell
 python -m scripts.predict --model models/diverse_ensemble.pkl --output submissions/submission_diverse.csv
 ```
 
-Simpan `diverse_ensemble.pkl` bersama kelima file model dari masing-masing prefix:
-`diverse_sampled_fold_`, `regional_medium_fold_`, `native_fold_`, dan
-`improved_wide_fold_`. Submission regional berskor 0.59326 tetap dipertahankan.
+Pertahankan `diverse_ensemble.pkl` bersama kelima file fold untuk masing-masing prefix `diverse_sampled_fold_`, `regional_medium_fold_`, `native_fold_`, dan `improved_wide_fold_`. File ensemble merujuk model komponen di folder `models/`; file ensemble saja tidak cukup untuk melakukan prediksi.
+
+Checkpoint menggunakan manifest SHA-256 data/kode untuk mencegah pemakaian hasil lama dengan konfigurasi berbeda. Jangan mengubah notebook atau modul saat training berjalan. Manifest lama dapat menolak resume setelah kode berubah. Untuk mereproduksi checkpoint sebelum penambahan fitur regional, gunakan commit `9fb4dda` di checkout terpisah. Clone baru tanpa checkpoint dapat menjalankan urutan di atas dari awal.
+
+Untuk mencoba baseline lain pada subset kecil:
+
+```powershell
+python -m scripts.train --model logistic_regression --sample-size 2000 --output models/smoke.pkl
+```
+
+Model subset hanya untuk pemeriksaan alur, bukan submission utama. Perintah predict tanpa argumen memakai `models/model.pkl` dan menulis ulang `submissions/submission.csv`; gunakan path model/output eksplisit untuk memilih eksperimen.
+
+## Verifikasi hasil
+
+Pemeriksaan pada model akhir mencakup:
+
+- 228.629 baris submission dengan ID unik dan urutan yang sama dengan sample submission.
+- Label integer 1–5 tanpa nilai kosong.
+- Perhitungan ulang F1-macro menggunakan Scikit-Learn.
+- Seluruh 20 model menggunakan Pipeline dan ColumnTransformer.
+- Kesesuaian probabilitas model yang dimuat ulang pada 128 baris test.
+- Pemeriksaan docstring modul dan sintaks kode notebook.
+
+Hasilnya tersimpan di [diverse_verification.json](reports/diverse_verification.json). Prediksi model yang dimuat ulang berbeda paling banyak sekitar 3.33e-16 dari probabilitas tersimpan, sesuai toleransi floating-point. Submission eksperimen sebelumnya tetap dipertahankan untuk perbandingan.
+
+## Pengelolaan Git dan data
+
+`.gitignore` mengecualikan seluruh `data/*.csv`, metadata kompetisi, model biner, checkpoint probabilitas, submission, environment, dan kredensial. Dataset tidak boleh di-commit, termasuk file yang berukuran kurang dari 100 MB.
+
+Sebelum commit, periksa:
+
+```powershell
+git check-ignore data/train.csv data/test.csv data/sample_submission.csv
+git status --short
+git ls-files "data/*.csv"
+```
+
+Perintah terakhir harus tidak menghasilkan output. Jika dataset pernah masuk index, gunakan `git rm --cached -- <path>` untuk menghapusnya dari index tanpa menghapus file lokal. Jangan memakai `git add -f` pada dataset. Mengabaikan file tidak menghapusnya dari riwayat commit yang sudah ada.
+
+Repositori ini menyimpan kode, notebook, dokumentasi, laporan agregat, dan gambar analisis. Dataset harus diunduh melalui Kaggle, sedangkan model dan submission dihasilkan kembali melalui workflow yang tersedia.
