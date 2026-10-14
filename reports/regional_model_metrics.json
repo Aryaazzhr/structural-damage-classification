@@ -69,6 +69,9 @@
   },
   "protocol": "Regional feature pipeline capacity and blend selected on fold 0 only; class decision weights fixed to incumbent 0.59242 ensemble. Frozen for folds 1-4. These folds have historical reuse; this is not a fresh unbiased benchmark.",
   "baseline_leaderboard_user_reported": 0.59242,
-  "new_leaderboard": null,
-  "confirmation_improved": true
+  "new_leaderboard": 0.59326,
+  "confirmation_improved": true,
+  "leaderboard_source": "Reported by user",
+  "leaderboard_improved": true,
+  "leaderboard_delta": 0.00084
 }

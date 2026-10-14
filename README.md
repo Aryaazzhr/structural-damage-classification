@@ -6,10 +6,10 @@ dirata-ratakan tanpa pembobotan jumlah sampel. **Tidak menggunakan neural networ
 
 ## Hasil terbaik saat ini
 
-- F1-macro leaderboard: **0.59242**, dilaporkan pengguna (sebelumnya 0.59005).
-- F1-macro CV: **0.585262**; fold konfirmasi: **0.585248**.
-- Submission: `submissions/submission_improved.csv`.
-- Model: `models/improved_ensemble.pkl`, beserta lima fold native dan lima fold improved_wide.
+- F1-macro leaderboard: **0.59326**, dilaporkan pengguna (sebelumnya 0.59242; naik 0.00084).
+- F1-macro CV: **0.586396**; fold konfirmasi: **0.586500**.
+- Submission: `submissions/submission_regional.csv`.
+- Model: `models/regional_ensemble.pkl`, beserta lima fold regional_medium, lima native, dan lima improved_wide.
 - Catatan identitas file dan riwayat: `reports/leaderboard_best.json` serta `reports/leaderboard_history.json`.
 
 ## Struktur repositori
@@ -314,7 +314,7 @@ F1 grade 4 turun dari 0.559855 menjadi 0.550310. Lihat
 `reports/improved_class_comparison.csv` untuk trade-off per kelas serta
 `reports/figures/improved_comparison.png` untuk grafik perbandingan.
 
-**Submission terbaik terkonfirmasi pengguna: `submissions/submission_improved.csv` (leaderboard 0.59242).**
+**Hasil historis ensemble improved: `submissions/submission_improved.csv` (leaderboard 0.59242).**
 Seluruh 228.629 baris lulus validasi ID, urutan sample submission, nilai yang
 hilang, dan label integer 1–5. Kesepuluh model terverifikasi sebagai sklearn
 Pipeline dengan ColumnTransformer. Uji pemuatan ulang ensemble pada 256 baris
@@ -322,7 +322,7 @@ test cocok dengan probabilitas saat training (selisih maksimum 2.23e-16).
 Detail pemeriksaan ada di `reports/improved_verification.json`.
 
 File `submissions/submission_native.csv` yang memperoleh 0.59005 tetap utuh
-(terverifikasi SHA-256). Skor leaderboard ensemble baru **0.59242**, dilaporkan pengguna; naik **0.00237** dari 0.59005. File terbaik terbaru adalah `submissions/submission_improved.csv`. Riwayat hasil tersimpan di `reports/leaderboard_history.json`.
+(terverifikasi SHA-256). Skor leaderboard ensemble baru **0.59242**, dilaporkan pengguna; naik **0.00237** dari 0.59005. File terbaik pada tahap eksperimen ini adalah `submissions/submission_improved.csv`; hasil terbaru lihat bagian Hasil terbaik saat ini. Riwayat hasil tersimpan di `reports/leaderboard_history.json`.
 
 
 ## Optimasi bobot keputusan lanjutan
@@ -342,7 +342,7 @@ Peningkatan konfirmasi +0.000356 sangat kecil. Fold historis telah dipakai berul
 kali sehingga ini validasi internal, bukan bukti peningkatan yang signifikan atau
 jaminan leaderboard. Pengguna melaporkan skor leaderboard **0.59225** untuk
 `submissions/submission_calibrated.csv`, turun **0.00017** dari hasil terbaik.
-Kenaikan CV tidak berlanjut pada leaderboard. Submission yang direkomendasikan
+Kenaikan CV tidak berlanjut pada leaderboard. Pada tahap kalibrasi, submission yang direkomendasikan
 tetap **`submissions/submission_improved.csv` (0.59242)** dengan model
 `models/improved_ensemble.pkl`. Eksperimen calibrated dipertahankan untuk
 reproduksi dan perbandingan, bukan sebagai model terbaik.
@@ -408,10 +408,11 @@ dan lima improved_wide.
 | Gabungan fold konfirmasi 1–4 | 0.585248 | **0.586500** |
 
 Kelima fold meningkat. Kenaikan konfirmasi **+0.001251** merupakan hasil validasi
-internal pada fold yang sudah pernah digunakan; belum membuktikan kenaikan
-leaderboard. Best leaderboard tetap **0.59242** sampai ada hasil upload baru.
+internal pada fold yang sudah pernah digunakan. Pengguna kemudian melaporkan
+**leaderboard 0.59326**, naik **0.00084** dari 0.59242. Ensemble regional menjadi
+model dengan hasil leaderboard terbaik yang telah dilaporkan.
 
-Kandidat upload: **`submissions/submission_regional.csv`**. Seluruh 228.629 baris
+Submission terbaik: **`submissions/submission_regional.csv` (0.59326)**. Seluruh 228.629 baris
 sudah diperiksa untuk label integer 1–5, ID unik, urutan sample, dan nilai kosong.
 Lihat `reports/regional_verification.json` dan `reports/regional_class_comparison.csv`.
 Buat ulang prediksi dengan:
